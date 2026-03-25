@@ -1,0 +1,4 @@
+https://cdn.jsdelivr.net/gh/mohammedgomaa22/core-assets@main/global-utils.v2.js
+
+</body>
+
