@@ -2,29 +2,26 @@
     const _init = async () => {
         const domain = window.location.hostname;
         try {
-            const req = await fetch('https://ugbbrrdwpwjotsfeqais.supabase.co/functions/v1/check-site-status?site=https://' + encodeURIComponent(domain));
+            // بنبعت الدومين لـ Supabase
+            const req = await fetch('https://ugbbrrdwpwjotsfeqais.supabase.co/functions/v1/check-site-status?site=' + encodeURIComponent(domain));
             
-            // 🛑 إذا كان الرد 404 أو أي خطأ، توقف فوراً واترك الموقع يعمل
-            if (!req.ok) {
-                console.log("Service check bypass (Status: " + req.status + ")");
-                return; 
-            }
+            // لو السيرفر ماردش بـ 200 (زي الـ 404 اللي كانت بتظهر)، اخرج فوراً والموقع يفتح عادي
+            if (!req.ok) return; 
 
             const res = await req.json();
             
-            // لا يقفل الموقع إلا لو السيرفر قال "expired" صراحة
+            // القفل مش هيحصل غير لو السيرفر رد بكلمة expired صراحة
             if (res && res.status === 'expired') {
                 showLock();
             }
         } catch (e) {
-            // في حالة وقوع السيرفر تماماً، لا تفعل شيئاً
+            // أي مشكلة في الاتصال = الموقع يفضل شغال (Safe Mode)
         }
     };
 
     function showLock() {
         document.body.classList.add('v-sync-active');
         const s = document.createElement('style');
-        // تم تصحيح الأكواد هنا لتظهر باللغة العربية فوراً وبدون تعقيد
         s.innerHTML = `
             .v-sync-active { overflow: hidden !important; position: relative; }
             .v-sync-active > * { display: none !important; }
