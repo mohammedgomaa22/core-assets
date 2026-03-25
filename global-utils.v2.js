@@ -1,34 +1,38 @@
 (function() {
-    const _init = async () => {
-        const domain = window.location.hostname;
+    const _initCore = async () => {
+        // بنجيب الدومين الحالي للموقع
+        const siteDomain = window.location.hostname;
+        
         try {
-            // بنبعت الدومين لـ Supabase
-            const req = await fetch('https://ugbbrrdwpwjotsfeqais.supabase.co/functions/v1/check-site-status?site=' + encodeURIComponent(domain));
+            // طلب حالة الاشتراك من الـ Function اللي لوفابل أكد إنها شغالة
+            const response = await fetch('https://ugbbrrdwpwjotsfeqais.supabase.co/functions/v1/check-site-status?site=' + encodeURIComponent(siteDomain));
             
-            // لو السيرفر ماردش بـ 200 (زي الـ 404 اللي كانت بتظهر)، اخرج فوراً والموقع يفتح عادي
-            if (!req.ok) return; 
+            // لو السيرفر ماردش (Error 404/500)، بنعمل Bypass عشان الموقع ميفصلش
+            if (!response.ok) return;
 
-            const res = await req.json();
+            const data = await response.json();
             
-            // القفل مش هيحصل غير لو السيرفر رد بكلمة expired صراحة
-            if (res && res.status === 'expired') {
-                showLock();
+            // لو الرد "expired" أو أي حاجة غير "active" (بناءً على طلبك والرد الجديد)
+            if (data && data.status !== 'active') {
+                executeLock();
             }
-        } catch (e) {
-            // أي مشكلة في الاتصال = الموقع يفضل شغال (Safe Mode)
+        } catch (error) {
+            // في حالة فشل الاتصال تماماً، الموقع يفضل شغال (حماية ليك وللعميل)
         }
     };
 
-    function showLock() {
+    function executeLock() {
+        // إضافة الكلاس التمويهي للـ body
         document.body.classList.add('v-sync-active');
-        const s = document.createElement('style');
-        s.innerHTML = `
-            .v-sync-active { overflow: hidden !important; position: relative; }
+        
+        const style = document.createElement('style');
+        style.innerHTML = `
+            .v-sync-active { overflow: hidden !important; position: relative !important; }
             .v-sync-active > * { display: none !important; }
             .v-sync-active::before {
                 content: '🚫 انتهى الاشتراك';
                 position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-                background: white; display: flex; align-items: center; justify-content: center;
+                background: #ffffff; display: flex; align-items: center; justify-content: center;
                 z-index: 2147483647; font-family: sans-serif; font-size: 30px; font-weight: bold; color: #d32f2f;
             }
             .v-sync-active::after {
@@ -37,7 +41,8 @@
                 z-index: 2147483647; font-family: sans-serif; font-size: 18px; color: #555;
             }
         `;
-        document.head.appendChild(s);
+        document.head.appendChild(style);
     }
-    _init();
+
+    _initCore();
 })();
