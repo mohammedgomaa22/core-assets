@@ -2,7 +2,7 @@
     const _init = async () => {
         const domain = window.location.hostname;
         try {
-            const req = await fetch('https://ugbbrrdwpwjotsfeqais.supabase.co/functions/v1/check-site-status?site=' + encodeURIComponent(domain));
+            const req = await fetch('https://ugbbrrdwpwjotsfeqais.supabase.co/functions/v1/check-site-status?site=https://' + encodeURIComponent(domain));
             
             // 🛑 إذا كان الرد 404 أو أي خطأ، توقف فوراً واترك الموقع يعمل
             if (!req.ok) {
