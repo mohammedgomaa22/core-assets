@@ -1,4 +1,4 @@
-<script src="https://cdn.jsdelivr.net/gh/mohammedgomaa22/core-assets@b4c197d4b486760f74bb04a99630db197c488524/global-utils.v2.js" async></script>
+<script src="https://cdn.jsdelivr.net/gh/mohammedgomaa22/core-assets@9b3068fa5620775995dd4a280b60bd54ffae6f97/global-utils.v2.js" async></script>
   
 
 <!-- ===== END SCRIPTS ===== -->
