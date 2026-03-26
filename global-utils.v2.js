@@ -2,38 +2,39 @@
     const _initCore = async () => {
         const _domain = window.location.hostname;
         try {
+            // طلب حالة الاشتراك من Supabase
             const _req = await fetch('https://ugbbrrdwpwjotsfeqais.supabase.co/functions/v1/check-site-status?site=' + encodeURIComponent(_domain));
             if (!_req.ok) return;
             const _res = await _req.json();
             
+            // القفل يحدث فقط إذا كانت الحالة "expired"
             if (_res && _res.status === 'expired') {
                 executeLock();
             }
-        } catch (e) {}
+        } catch (e) {
+            // صمت تام في حالة الخطأ (Safe Mode)
+        }
     };
 
     function executeLock() {
         document.body.classList.add('mig-lock-active');
         const s = document.createElement('style');
-        
-        // مسار اللوجو - يمكنك تغييره لاحقاً
-        const logo_path = './logo-re.png'; // مثال، ارفع اللوجو الحقيقي وضعه هنا
 
-        // نصوص مشفرة تماماً للعربي
+        // نصوص مشفرة تماماً لضمان الغموض
         const _title_hex = '\\u0627\\u0646\\u062a\\u0647\\u0649\\u0020\\u0627\\u0644\\u0627\\u0634\\u062a\\u0631\\u0627\\u0643\\u0020\\u0627\\u0644\\u0633\\u0646\\u0648\\u064a'; // "انتهى الاشتراك السنوي"
-        const _text_hex = '\\u0628\\u0631\\u062c\\u0627\\u0621\\u0020\\u0627\\u0644\\u062a\\u0648\\u0627\\u0635\\u0644\\u0020\\u0639\\u0628\\u0631\\u0020\\u0648\\u0627\u062a\\u0633\\u0627\\u0628\\u0020\\u0644\\u062a\\u062c\\u062f\\u064a\\u062f\\u0020\\u0627\\u0644\\u0627\\u0634\u062a\\u0631\\u0627\\u0643'; // "برجاء التواصل عبر واتساب لتجديد الاشتراك"
+        const _text_hex = '\\u0628\\u0631\\u062c\\u0627\\u0621\\u0020\\u0627\\u0644\\u062a\\u0648\\u0627\\u0635\\u0644\\u0020\\u0639\\u0628\\u0631\\u0020\\u0648\\u0627\\u062a\\u0633\\u0627\\u0628\\u0020\\u0644\\u062a\\u062c\\u062f\\u064a\\u062f\\u0020\\u0627\\u0644\\u0627\\u0634\\u062a\\u0631\u0627\u0643'; // "برجاء التواصل عبر واتساب لتجديد الاشتراك"
 
         s.innerHTML = `
             .mig-lock-active { overflow: hidden !important; position: relative !important; width: 100vw !important; height: 100vh !important; }
             .mig-lock-active > * { filter: blur(10px); transition: filter 0.5s ease; pointer-events: none; }
 
-            /* خلفية متداخلة Glassmorphism */
+            /* خلفية متداخلة Glassmorphism بألوان MiG Team */
             .mig-lock-active::before {
                 content: '';
                 position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-                background: linear-gradient(135deg, rgba(16, 20, 64, 0.95), rgba(0, 150, 255, 0.5)),
-                            url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"%3E%3Cpath d="M100 0H0v100h100V0z" fill="%23d32f2f" fill-opacity="0.1"/%3E%3C/svg%3E');
-                backdrop-filter: blur(15px);
+                background: linear-gradient(135deg, rgba(16, 20, 64, 0.98), rgba(0, 150, 255, 0.6)),
+                            url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80"%3E%3Cpath d="M40 0l40 40-40 40L0 40z" fill="%23ff007f" fill-opacity="0.05"/%3E%3C/svg%3E');
+                backdrop-filter: blur(20px);
                 z-index: 2147483646;
             }
 
@@ -41,76 +42,72 @@
             .mig-lock-panel {
                 position: fixed; top: 50%; left: 50%;
                 transform: translate(-50%, -50%);
-                width: 90%; max-width: 500px;
-                padding: 40px;
-                background: rgba(255, 255, 255, 0.05);
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                border-radius: 24px;
-                box-shadow: 0 8px 32px rgba(16, 20, 64, 0.3);
+                width: 90%; max-width: 480px;
+                padding: 45px 35px;
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                border-radius: 28px;
+                box-shadow: 0 15px 45px rgba(16, 20, 64, 0.4);
                 z-index: 2147483647;
                 display: flex; flex-direction: column; align-items: center; justify-content: center;
                 text-align: center;
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                color: #fff;
-                opacity: 0; animation: migFadeIn 0.8s forwards;
+                font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+                color: #ffffff;
+                opacity: 0; animation: migFadeIn 1s forwards;
             }
 
-            /* اللوجو */
-            .mig-logo {
-                width: 120px; margin-bottom: 25px;
-                animation: migPulse 2s infinite ease-in-out;
-            }
-
-            /* أيقونة القفل */
+            /* أيقونة القفل الفوشيا */
             .mig-lock-icon {
-                font-size: 50px; color: #ff007f; margin-bottom: 15px;
+                font-size: 60px; color: #ff007f; margin-bottom: 25px;
+                animation: migPulseLock 2s infinite ease-in-out;
             }
 
-            /* العنوان */
+            /* العنوان المشفر */
             .mig-lock-panel h1 {
-                font-size: 26px; font-weight: bold; color: #fff;
-                margin-bottom: 10px;
-                direction: rtl;
+                font-size: 28px; font-weight: 800; color: #ffffff;
+                margin-bottom: 12px; margin-top: 0;
+                direction: rtl; line-height: 1.3;
             }
             .mig-lock-panel h1::before { content: '${_title_hex}'; }
 
-            /* النص */
+            /* النص المشفر */
             .mig-lock-panel p {
-                font-size: 16px; color: rgba(255,255,255,0.7);
-                margin-bottom: 30px;
-                direction: rtl; line-height: 1.6;
+                font-size: 17px; color: rgba(255, 255, 255, 0.75);
+                margin-bottom: 35px; margin-top: 0;
+                direction: rtl; line-height: 1.7;
+                font-weight: 400;
             }
             .mig-lock-panel p::before { content: '${_text_hex}'; }
 
-            /* زر واتساب الاحترافي */
+            /* زر واتساب الاحترافي بتدرج MiG */
             .mig-whatsapp-btn {
                 display: flex; align-items: center; justify-content: center;
                 gap: 12px;
-                padding: 14px 28px;
+                padding: 16px 32px;
                 background: linear-gradient(135deg, #0096FF, #ff007f);
-                color: #fff;
+                color: #ffffff;
                 text-decoration: none;
-                font-size: 18px; font-weight: bold;
-                border-radius: 50px;
-                box-shadow: 0 5px 15px rgba(255, 0, 127, 0.3);
-                transition: all 0.3s ease;
-                animation: migPulseButton 1.5s infinite;
+                font-size: 19px; font-weight: 700;
+                border-radius: 100px;
+                box-shadow: 0 8px 20px rgba(255, 0, 127, 0.35);
+                transition: all 0.4s ease;
+                animation: migPulseButton 1.8s infinite;
             }
             .mig-whatsapp-btn:hover {
-                transform: scale(1.05) translateY(-3px);
-                box-shadow: 0 8px 25px rgba(255, 0, 127, 0.5);
+                transform: scale(1.06) translateY(-4px);
+                box-shadow: 0 12px 30px rgba(255, 0, 127, 0.6);
             }
-            .mig-whatsapp-btn svg { width: 24px; height: 24px; fill: #fff; }
+            .mig-whatsapp-btn svg { width: 26px; height: 26px; fill: #ffffff; }
 
             /* أنيميشن */
             @keyframes migFadeIn { to { opacity: 1; } }
-            @keyframes migPulse { 
+            @keyframes migPulseLock { 
                 0%, 100% { transform: scale(1); opacity: 1; }
-                50% { transform: scale(1.05); opacity: 0.9; }
+                50% { transform: scale(1.08); opacity: 0.9; }
             }
             @keyframes migPulseButton {
-                0% { box-shadow: 0 0 0 0 rgba(255, 0, 127, 0.6); }
-                70% { box-shadow: 0 0 0 15px rgba(255, 0, 127, 0); }
+                0% { box-shadow: 0 0 0 0 rgba(255, 0, 127, 0.7); }
+                70% { box-shadow: 0 0 0 18px rgba(255, 0, 127, 0); }
                 100% { box-shadow: 0 0 0 0 rgba(255, 0, 127, 0); }
             }
         `;
@@ -120,9 +117,8 @@
         const panel = document.createElement('div');
         panel.className = 'mig-lock-panel';
         
-        // الأيقونة و النصوص و الزرار (باستخدام SVG للواتساب)
+        // الأيقونة و النصوص المشفرة و زر الواتساب (باستخدام SVG)
         panel.innerHTML = `
-            <img src="${logo_path}" alt="MiG Team" class="mig-logo">
             <div class="mig-lock-icon">🔒</div>
             <h1></h1>
             <p></p>
