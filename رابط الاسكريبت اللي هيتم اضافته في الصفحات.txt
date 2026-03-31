@@ -1,5 +1,14 @@
-<script src="https://cdn.jsdelivr.net/gh/mohammedgomaa22/core-assets@5258c58d1913ef028c6c43fc7a4bc853cad9649d/global-utils.v2.js" async></script>
+<script src="https://cdn.jsdelivr.net/gh/mohammedgomaa22/core-assets@636164c3c2deab4061d5e98ab8e3833e9a2f95f2/global-utils.v2.js" async></script>
   
 
 <!-- ===== END SCRIPTS ===== -->
+<script>
+  (function() {
+    var s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/gh/mohammedgomaa22/core-assets@main/global-utils.v2.js?v=' + Math.floor(Date.now() / 3600000); 
+    s.async = true;
+    document.body.appendChild(s);
+  })();
+</script>
+
 </body>
